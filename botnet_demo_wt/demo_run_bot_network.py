@@ -14,7 +14,7 @@ RSI_BUY_THRESHOLD_1h = 100
 RSI_BUY_THRESHOLD_15m = 100
 
 
-client = Client(config.API_KEY, config.API_SECRET, tld='us')
+client = Client(config.API_KEY, config.API_SECRET)
 
 ta_indicator = "rsi"
 intervals = ['1d', '1h', '15m']
@@ -25,7 +25,7 @@ endpoint = "https://api.taapi.io/{}".format(ta_indicator)
 ### Helpers
 pair_to_alert_list_usd = []
 for coin in coins_to_alert_list:
-    pair_to_alert_list_usd.append(f"{coin}USD")  # For formatting w/ & w/o "USD"
+    pair_to_alert_list_usd.append(f"{coin}USDT")  # For formatting w/ & w/o "USD"
 
 
 def run_bot_network():
@@ -41,7 +41,7 @@ def run_bot_network():
             current_market_price = float(coin_pairs['price'])
 
             # Prepare for Technical Analysis Request
-            coin = coin_usd.split('USD', 1)[0]
+            coin = coin_usd.split('USDT', 1)[0]
             rsi_list = []
 
             for interval in intervals:
@@ -54,9 +54,11 @@ def run_bot_network():
                 try:
                     response = requests.get(url=endpoint, params=parameters)
                     result = response.json()
+                    print(result)
                     rsi = round(result['value'], 2)
                     # print(f'{coin} {interval} {rsi}')
                     rsi_list.append(rsi)
+                    time.sleep(15) 
                 except Exception as e:
                     print(f'ERROR: {e}')
 
